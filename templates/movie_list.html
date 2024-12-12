@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Movie List</h1>
+            <nav>
+                <a href="/">Homepage</a>
+                <a href="/add_movie">Add Movie</a>
+            </nav>
+        </header>
+
+        <section class="movie-list">
+            <ul>
+                {% for movie in movies %}
+                    <li>
+                        <div class="movie-card">
+                            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                            <div class="movie-info">
+                                <h3>{{ movie.title }}</h3>
+                                <p><strong>Year:</strong> {{ movie.year }}</p>
+                                <p><strong>Genre:</strong> {{ movie.genre }}</p>
+                                <p><strong>Description:</strong> {{ movie.description }}</p>
+                                <p><strong>Score:</strong> 
+                                    {% if movie.ratings %}
+                                        {{ movie.ratings[0].rating }}  <!-- Admin tarafından verilmiş puan -->
+                                    {% else %}
+                                    No rating given yet.
+                                    {% endif %}
+                                </p>
+                                <p><strong>Added Date:</strong> 
+                                    {% for log in movie.logs %}
+                                        {{ log.watched_date.strftime('%Y-%m-%d') }}
+                                    {% endfor %}
+                                </p>
+                                <a href="{{ url_for('delete_movie', movie_id=movie.id) }}" class="delete-button">Delete</a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
