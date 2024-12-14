@@ -18,7 +18,6 @@ def create_tables():
 def index():
     return render_template('index.html')
 
-# Film ekleme
 @app.route('/add_movie', methods=['GET', 'POST'])
 def add_movie():
     if request.method == 'POST':
