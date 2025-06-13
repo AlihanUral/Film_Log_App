@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Film Arama Sonuçları - Sinefilhub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">Arama Sonuçları</h1>
+        <a href="{{ url_for('add_movie') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Yeni Arama
+        </a>
+    </div>
+
+    {% if movies %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for movie in movies %}
+        <div class="col">
+            <div class="card h-100">
+                {% if movie.Poster and movie.Poster != 'N/A' %}
+                <img src="{{ movie.Poster }}" class="card-img-top" alt="{{ movie.Title }} poster">
+                {% else %}
+                <div class="card-img-top bg-dark d-flex align-items-center justify-content-center" style="height: 400px;">
+                    <i class="fas fa-film fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.Title }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">{{ movie.Year }} • {{ movie.Type|title }}</small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#movieModal{{ movie.imdbID }}">
+                        <i class="fas fa-info-circle me-2"></i>Detayları Gör
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movie Detail Modal -->
+        <div class="modal fade" id="movieModal{{ movie.imdbID }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title">{{ movie.Title }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% if movie.Poster and movie.Poster != 'N/A' %}
+                                <img src="{{ movie.Poster }}" class="img-fluid rounded" alt="{{ movie.Title }} poster">
+                                {% else %}
+                                <div class="bg-dark rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                                    <i class="fas fa-film fa-3x text-muted"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="text-muted mb-3">{{ movie.Year }} • {{ movie.Type|title }}</h6>
+                                <div id="movieDetails{{ movie.imdbID }}">
+                                    <div class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Yükleniyor...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="rating-system mb-4">
+                                    <label class="form-label">Puanınız</label>
+                                    <div class="stars">
+                                        {% for i in range(1, 6) %}
+                                        <i class="far fa-star star-rating" data-rating="{{ i }}" data-movie-id="{{ movie.imdbID }}"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <form method="POST" action="{{ url_for('add_movie_to_list') }}" class="d-inline" id="addMovieForm{{ movie.imdbID }}">
+                                    <input type="hidden" name="imdb_id" value="{{ movie.imdbID }}">
+                                    <input type="hidden" name="rating" id="rating-input-{{ movie.imdbID }}" value="0">
+                                    <button type="submit" class="btn btn-primary" id="addMovieBtn{{ movie.imdbID }}" disabled>
+                                        <i class="fas fa-plus me-2"></i>Listeye Ekle
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>Aramanızla eşleşen film bulunamadı.
+    </div>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Yıldız puanlama sistemi
+    const stars = document.querySelectorAll('.star-rating');
+    
+    stars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const rating = this.dataset.rating;
+            const movieId = this.dataset.movieId;
+            updateStars(rating, movieId);
+        });
+
+        star.addEventListener('mouseout', function() {
+            const movieId = this.dataset.movieId;
+            const currentRating = document.getElementById(`rating-input-${movieId}`).value;
+            updateStars(currentRating, movieId, true);
+        });
+
+        star.addEventListener('click', function() {
+            const rating = this.dataset.rating;
+            const movieId = this.dataset.movieId;
+            document.getElementById(`rating-input-${movieId}`).value = rating;
+            document.getElementById(`addMovieBtn${movieId}`).disabled = false;
+            updateStars(rating, movieId, true);
+        });
+    });
+
+    function updateStars(rating, movieId, isClick = false) {
+        const stars = document.querySelectorAll(`.star-rating[data-movie-id="${movieId}"]`);
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('text-warning');
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('text-warning');
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        });
+    }
+
+    // Modal açıldığında film detaylarını yükle
+    const modals = document.querySelectorAll('[id^="movieModal"]');
+    modals.forEach(modal => {
+        modal.addEventListener('show.bs.modal', function() {
+            const movieId = this.id.replace('movieModal', '');
+            const detailsContainer = document.getElementById(`movieDetails${movieId}`);
+            
+            // Film detaylarını getir
+            fetch(`/movie_details/${movieId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.Response === 'True') {
+                        detailsContainer.innerHTML = `
+                            <p class="mb-2"><strong>Tür:</strong> ${data.Genre}</p>
+                            <p class="mb-2"><strong>Yönetmen:</strong> ${data.Director}</p>
+                            <p class="mb-2"><strong>Oyuncular:</strong> ${data.Actors}</p>
+                            <p class="mb-4">${data.Plot}</p>
+                        `;
+                    } else {
+                        detailsContainer.innerHTML = '<p class="text-danger">Film detayları yüklenemedi.</p>';
+                    }
+                })
+                .catch(error => {
+                    detailsContainer.innerHTML = '<p class="text-danger">Film detayları yüklenirken bir hata oluştu.</p>';
+                });
+        });
+    });
+
+    // Form gönderimi sırasında butonu devre dışı bırak
+    const forms = document.querySelectorAll('form[id^="addMovieForm"]');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const movieId = this.id.replace('addMovieForm', '');
+            const button = document.getElementById(`addMovieBtn${movieId}`);
+            const rating = document.getElementById(`rating-input-${movieId}`).value;
+            
+            if (rating === '0') {
+                e.preventDefault();
+                alert('Lütfen filme bir puan verin.');
+                return;
+            }
+            
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ekleniyor...';
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

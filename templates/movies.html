@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Filmlerim - Sinefilhub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">Filmlerim</h1>
+        <a href="{{ url_for('add_movie') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Film Ekle
+        </a>
+    </div>
+
+    <!-- Arama Formu -->
+    <div class="card bg-dark mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('movies') }}" class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control bg-dark text-white border-secondary" 
+                               placeholder="Film ara..." value="{{ request.args.get('search', '') }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-2"></i>Ara
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if movies.items %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for movie in movies.items %}
+        <div class="col">
+            <div class="card h-100">
+                {% if movie.poster_url and movie.poster_url != 'N/A' %}
+                <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }} poster">
+                {% else %}
+                <div class="card-img-top bg-dark d-flex align-items-center justify-content-center" style="height: 400px;">
+                    <i class="fas fa-film fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">{{ movie.year }} • {{ movie.genre }}</small>
+                    </p>
+                    {% if movie.rating %}
+                    <div class="rating-display">
+                        {% for i in range(1, 6) %}
+                        {% if i <= movie.rating %}
+                        <i class="fas fa-star text-warning"></i>
+                        {% else %}
+                        <i class="far fa-star text-warning"></i>
+                        {% endif %}
+                        {% endfor %}
+                        <span class="ms-2 text-muted">{{ movie.rating }}/5</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <form method="POST" action="{{ url_for('delete_movie', movie_id=movie.id) }}" 
+                          onsubmit="return confirm('Bu filmi silmek istediğinizden emin misiniz?');" class="d-inline">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="fas fa-trash me-2"></i>Sil
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sayfalama -->
+    {% if movies.pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if movies.has_prev %}
+            <li class="page-item">
+                <a class="page-link bg-dark text-white border-secondary" 
+                   href="{{ url_for('movies', page=movies.prev_num, search=request.args.get('search', '')) }}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for page_num in movies.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                {% if page_num %}
+                    {% if page_num == movies.page %}
+                    <li class="page-item active">
+                        <span class="page-link bg-primary border-primary">{{ page_num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link bg-dark text-white border-secondary" 
+                           href="{{ url_for('movies', page=page_num, search=request.args.get('search', '')) }}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link bg-dark text-white border-secondary">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if movies.has_next %}
+            <li class="page-item">
+                <a class="page-link bg-dark text-white border-secondary" 
+                   href="{{ url_for('movies', page=movies.next_num, search=request.args.get('search', '')) }}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        {% if request.args.get('search') %}
+        Aramanızla eşleşen film bulunamadı.
+        {% else %}
+        Henüz hiç film eklenmemiş. Hemen bir film ekleyin!
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

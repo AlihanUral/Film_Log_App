@@ -1,0 +1,224 @@
+/* Custom styles for Film Log App */
+
+/* Sinefilhub - Letterboxd inspired styles */
+
+:root {
+    --primary-color: #00e054;
+    --secondary-color: #032541;
+    --background-color: #14181b;
+    --card-background: #1c2328;
+    --text-color: #ffffff;
+    --text-muted: #8b949e;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.nav-link i {
+    margin-right: 5px;
+}
+
+/* Search Form */
+.search-form .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-color);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+}
+
+.search-form .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-color);
+    box-shadow: none;
+}
+
+.search-form .btn-outline-light {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-background);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+
+.card-img-top {
+    height: 400px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: var(--text-muted);
+}
+
+/* Rating Stars */
+.rating {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+}
+
+.btn-primary:hover {
+    background-color: #00c04b;
+    border-color: #00c04b;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--secondary-color);
+    color: var(--text-muted);
+}
+
+/* Alert Messages */
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-success {
+    background-color: rgba(0, 224, 84, 0.1);
+    color: var(--primary-color);
+}
+
+.alert-danger {
+    background-color: rgba(255, 59, 48, 0.1);
+    color: #ff3b30;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.page-link {
+    background-color: var(--card-background);
+    border-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.page-link:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 300px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .search-form {
+        margin-top: 1rem;
+    }
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.alert {
+    margin-bottom: 1rem;
+}
+
+.pagination {
+    margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 200px;
+    }
+} 

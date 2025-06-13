@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Film Puanla - Sinefilhub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-transparent border-0">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-star me-2"></i>Film Puanla
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        {% if movie.poster_url and movie.poster_url != 'N/A' %}
+                        <img src="{{ movie.poster_url }}" class="img-fluid rounded" alt="{{ movie.title }} poster">
+                        {% else %}
+                        <div class="bg-dark rounded d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <i class="fas fa-film fa-3x text-muted"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3 class="mb-3">{{ movie.title }}</h3>
+                        <p class="text-muted mb-2">{{ movie.year }} • {{ movie.genre }}</p>
+                        <p class="mb-4">{{ movie.description }}</p>
+                        
+                        <form method="POST" action="{{ url_for('rate_movie', movie_id=movie.id) }}">
+                            <div class="mb-4">
+                                <label for="rating" class="form-label">Puanınız (1-10)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-0">
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <input type="number" class="form-control bg-dark border-0 text-white" 
+                                           id="rating" name="rating" min="1" max="10" 
+                                           placeholder="1 ile 10 arasında bir puan verin">
+                                </div>
+                                <div class="form-text text-muted mt-1">Film hakkındaki düşüncelerinizi puanlayın</div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Puanı Kaydet
+                                </button>
+                                <a href="{{ url_for('list_movies') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-times me-2"></i>Vazgeç
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

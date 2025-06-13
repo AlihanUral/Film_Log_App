@@ -1,33 +1,84 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Movie</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Add Movie</h1>
-            <nav>
-                <a href="/">Homepage</a>
-                <a href="/movies">List Movies</a>
-            </nav>
-        </header>
+{% extends "base.html" %}
 
-        <section class="add-movie-form">
-            <form method="POST">
-                <label for="title">Film Title:</label>
-                <input type="text" id="title" name="title" required><br>
+{% block title %}Film Ekle - Sinefilhub{% endblock %}
 
-                <label for="rating">Score (1-5):</label>
-                <input type="number" id="rating" name="rating" min="1" max="5" required>
-
-
-                <button type="submit">Add</button>
-            </form>
-        </section>
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Film Ekle
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_movie') }}">
+                        <div class="mb-4">
+                            <label for="title" class="form-label text-white">
+                                <i class="fas fa-film me-2"></i>Film Adı
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-primary">
+                                    <i class="fas fa-search text-primary"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control bg-dark text-white border-primary" 
+                                       id="title" 
+                                       name="title" 
+                                       placeholder="Örn: Inception, Matrix, Interstellar" 
+                                       required>
+                            </div>
+                            <div class="form-text text-light mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Film adını İngilizce olarak yazın. Örneğin: "Inception", "The Matrix", "Interstellar"
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search me-2"></i>Film Ara
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.2);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+.form-control:focus + .input-group-text,
+.form-control:focus {
+    border-color: #0d6efd;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+}
+</style>
+{% endblock %}

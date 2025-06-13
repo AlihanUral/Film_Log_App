@@ -1,26 +1,31 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Film Log</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Film Log Application</h1>
-            <nav>
-                <a href="/">Homepage</a>
-                <a href="/movies">List Movies</a>
-                <a href="/add_movie">Add Movie</a>
-            </nav>
-        </header>
+{% extends "base.html" %}
 
-        <section class="intro">
-            <h2>Welcome!</h2>
-            <p>You can add movies and log the movies you have watched.</p>
-        </section>
+{% block title %}Sinefilhub - Film Koleksiyonunuz{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card bg-dark border-0">
+                <div class="card-body py-5">
+                    <h1 class="display-4 mb-4">
+                        <i class="fas fa-film text-primary me-3"></i>
+                        Sinefilhub'a Hoş Geldiniz
+                    </h1>
+                    <p class="lead mb-5">
+                        Film koleksiyonunuzu oluşturun, favorilerinizi puanlayın ve yeni filmler keşfedin.
+                    </p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a href="{{ url_for('add_movie') }}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-plus me-2"></i>Film Ekle
+                        </a>
+                        <a href="{{ url_for('movies') }}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="fas fa-list me-2"></i>Filmlerimi Gör
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

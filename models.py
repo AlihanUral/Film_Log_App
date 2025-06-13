@@ -5,6 +5,7 @@ db = SQLAlchemy()
 
 class Movie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    imdb_id = db.Column(db.String(20), unique=True, nullable=False)
     title = db.Column(db.String(100), nullable=False)
     year = db.Column(db.Integer)
     genre = db.Column(db.String(50))
